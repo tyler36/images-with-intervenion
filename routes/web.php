@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Photo;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function() {
+    return view('welcome', [
+        'photos' => Photo::pluck('name')->toArray()
+    ]);
+});
+
+Route::post('/save', function(Request $request){
+    $name = basename($request->photo->store('public'));
+
+    Photo::create([
+        'name' => $name
+    ]);
+
+    return redirect()->back();
 });
